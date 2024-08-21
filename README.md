@@ -1,70 +1,152 @@
-# Getting Started with Create React App
+# Self-contained Widget in React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Bundling everything into a single JavaScript file without a separate CSS file can be a valid approach for Self-contained Widget in React.
 
-## Available Scripts
+I install `styled-components`:
 
-In the project directory, you can run:
+```bash
+npm install styled-components
+```
 
-### `npm start`
+Import and use styled-components to define the global styles in `src\index.js`:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { createGlobalStyle } from 'styled-components'; // npm install styled-components
+import App from './App';
+import reportWebVitals from './reportWebVitals';
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-### `npm test`
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  }
+`;
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+const root = ReactDOM.createRoot(document.getElementById('rootxxx'));
+root.render(
+    <React.StrictMode>
+        <GlobalStyle />
+        <App />
+    </React.StrictMode>
+);
 
-### `npm run build`
+reportWebVitals();
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Directly apply styles using the style attribute in `src\App.js`:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```js
+function App() {
+    const rootStyle = {
+        border: '2px rgba(0,0,0,.05) solid',
+        position: 'relative',
+        width: '300px',
+        height: '300px'
+    };
+    return (
+        <div style={rootStyle}>
+            rootxxx
+        </div>
+    );
+}
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+export default App;
+```
 
-### `npm run eject`
+To remove `manifest.json` and logo files I update `public\index.html`:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+            name="description"
+            content="Web site created using create-react-app"
+        />
+        <title>React App</title>
+    </head>
+    <body>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <div id="rootxxx"></div>
+    </body>
+</html>
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+To remove leading slash from paths in build I can adjust the `homepage` property in `package.json` to an empty string. This tells `create-react-app` to generate relative paths instead of absolute paths. In `package.json`:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```json
+{
+  "name": "react-widget-test",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-scripts": "5.0.1",
+    "styled-components": "^6.1.12",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "homepage": "."
+}
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Rebuild the Project
 
-## Learn More
+After making this change, rebuild the project:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+npm run build
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Files updated:
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- modified:   README.md
+- modified:   package-lock.json 
+- modified:   package.json
+- deleted:    public/favicon.ico
+- modified:   public/index.html
+- deleted:    public/logo192.png
+- deleted:    public/logo512.png
+- deleted:    public/manifest.json
+- deleted:    src/App.css
+- modified:   src/App.js
+- deleted:    src/index.css
+- modified:   src/index.js
+- deleted:    src/logo.svg
